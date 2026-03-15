@@ -11,6 +11,12 @@ const bookingRoutes = require('./routes/bookings');
 
 const app = express();
 
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
 // Middleware
 app.use(cors({
   origin: true, // Reflect request origin, or use list of allowed origins
@@ -25,6 +31,17 @@ app.use('/api/homes', homeRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/bookings', bookingRoutes);
 
+// Fallback routes for Vercel (in case /api prefix is stripped)
+app.use('/auth', authRoutes);
+app.use('/homes', homeRoutes);
+app.use('/favorites', favoriteRoutes);
+app.use('/bookings', bookingRoutes);
+
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', message: 'V-Stay API is running' });
+});
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
@@ -32,6 +49,10 @@ mongoose.connect(process.env.MONGODB_URI)
   })
   .catch((err) => {
     console.error('MongoDB connection error:', err);
+    // Explicitly log the URI (hidden for security) to confirm it's being read
+    if (!process.env.MONGODB_URI) {
+      console.error('CRITICAL: MONGODB_URI is not defined in environment variables!');
+    }
   });
 
 // Export app for Vercel

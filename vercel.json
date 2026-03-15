@@ -21,11 +21,6 @@
       "dest": "server/uploads/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "client/$1",
-      "check": true
-    },
-    {
       "handle": "filesystem"
     },
     {
