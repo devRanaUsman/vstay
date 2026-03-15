@@ -8,7 +8,10 @@
     },
     {
       "src": "server/server.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["routes/**", "models/**", "middleware/**", "uploads/**"]
+      }
     }
   ],
   "routes": [

@@ -17,10 +17,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Middleware
+// Middleware (Relaxed for debugging deployment issues)
 app.use(cors({
-  origin: true, // Reflect request origin, or use list of allowed origins
-  credentials: true
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
