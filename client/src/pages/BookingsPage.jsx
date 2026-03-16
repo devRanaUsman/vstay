@@ -62,7 +62,7 @@ export default function BookingsPage() {
                     <p className="text-gray-600">Your upcoming and past stays</p>
                 </div>
 
-                {bookings.length === 0 ? (
+                {!Array.isArray(bookings) || bookings.length === 0 ? (
                     <div className="text-center py-20 bg-white rounded-2xl shadow-sm">
                         <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-blue-100 flex items-center justify-center">
                             <svg className="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
