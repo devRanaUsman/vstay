@@ -4,10 +4,10 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
-const authRoutes = require('./server/routes/auth');
-const homeRoutes = require('./server/routes/homes');
-const favoriteRoutes = require('./server/routes/favorites');
-const bookingRoutes = require('./server/routes/bookings');
+const authRoutes = require('../server/routes/auth');
+const homeRoutes = require('../server/routes/homes');
+const favoriteRoutes = require('../server/routes/favorites');
+const bookingRoutes = require('../server/routes/bookings');
 
 const app = express();
 
@@ -78,7 +78,7 @@ app.use('/bookings', bookingRoutes);
 // Direct health/debug checks
 app.get('/health', (req, res) => res.json({ 
   status: 'ok', 
-  source: 'v-stay-api-v7-FINAL-ROOT-SYNC',
+  source: 'v-stay-api-v8-ISOLATED-SYNC',
   db_state: mongoose.connection.readyState,
   uri_loaded: !!process.env.MONGODB_URI,
   uri_prefix: process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(0, 15) : 'none'
@@ -98,7 +98,7 @@ app.get('/debug', (req, res) => {
 app.use((req, res) => {
   res.status(404).json({ 
     error: 'API Route Not Found', 
-    path: req.url,
+    path: req.url, 
     method: req.method,
     full_url: req.originalUrl
   });
