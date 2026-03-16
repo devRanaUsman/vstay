@@ -26,8 +26,34 @@ app.use(cors({
 }));
 app.use(express.json());
 
+let isConnected = false;
+
+const connectDB = async () => {
+  if (isConnected) return;
+  if (!process.env.MONGODB_URI) {
+    console.error('MONGODB_URI is missing');
+    return;
+  }
+
+  try {
+    const db = await mongoose.connect(process.env.MONGODB_URI);
+    isConnected = db.connections[0].readyState === 1;
+    console.log('MongoDB connected');
+  } catch (err) {
+    console.error('MongoDB connection error:', err);
+    throw err;
+  }
+};
+
 // Path-stripping middleware (Crucial for Vercel)
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
+  // Ensure DB connection
+  try {
+    await connectDB();
+  } catch (err) {
+    return res.status(500).json({ error: 'Database connection failed', details: err.message });
+  }
+
   if (req.url.startsWith('/api')) {
     req.url = req.url.replace('/api', '');
   }
@@ -66,14 +92,6 @@ app.use((req, res) => {
     full_url: req.originalUrl
   });
 });
-
-// MongoDB Connection
-if (process.env.MONGODB_URI) {
-  console.log('Connecting to MongoDB...');
-  mongoose.connect(process.env.MONGODB_URI)
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
-}
 
 // Error handling for startup crashes
 app.use((err, req, res, next) => {
