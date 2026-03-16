@@ -42,6 +42,7 @@ app.use('/homes', homeRoutes);
 app.use('/favorites', favoriteRoutes);
 app.use('/bookings', bookingRoutes);
 app.get('/health', (req, res) => res.json({ status: 'ok', source: 'v-stay-direct' }));
+app.get('/homes', (req, res) => res.json({ status: 'fallback-ok', message: 'If you see this, routing needs refinement but code is working' }));
 
 // 404 Handler
 app.use((req, res) => {
