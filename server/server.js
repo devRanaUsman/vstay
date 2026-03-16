@@ -33,6 +33,10 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
+app.post('/api/auth/signup', (req, res, next) => {
+  console.log('Direct signup hit');
+  next();
+});
 app.use('/api/auth', authRoutes);
 app.use('/api/homes', homeRoutes);
 app.use('/api/favorites', favoriteRoutes);
