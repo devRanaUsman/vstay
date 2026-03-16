@@ -67,20 +67,20 @@ export default function SignupPage() {
                                     <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">First name</label>
                                     <input type="text" id="firstName" name="firstName" required
                                         className="w-full px-4 py-3 border border-gray-300 rounded-xl input-focus focus:border-purple-500 focus:outline-none transition-all"
-                                        placeholder="John" />
+                                        placeholder="First Name" />
                                 </div>
                                 <div>
                                     <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">Last name</label>
                                     <input type="text" id="lastName" name="lastName" required
                                         className="w-full px-4 py-3 border border-gray-300 rounded-xl input-focus focus:border-purple-500 focus:outline-none transition-all"
-                                        placeholder="Doe" />
+                                        placeholder="Last Name" />
                                 </div>
                             </div>
                             <div>
                                 <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">Email address</label>
                                 <input type="email" id="email" name="email" required
                                     className="w-full px-4 py-3 border border-gray-300 rounded-xl input-focus focus:border-purple-500 focus:outline-none transition-all"
-                                    placeholder="you@example.com" />
+                                    placeholder="Email Address" />
                             </div>
                             <div>
                                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">Password</label>

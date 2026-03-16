@@ -10,7 +10,7 @@
       "src": "server/server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["routes/**", "models/**", "middleware/**", "uploads/**"]
+        "includeFiles": ["server/routes/**", "server/models/**", "server/middleware/**", "server/uploads/**"]
       }
     }
   ],
