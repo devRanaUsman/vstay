@@ -24,17 +24,29 @@ app.use(express.json());
 app.use(async (req, res, next) => {
   // Ensure DB connection for every request
   if (mongoose.connection.readyState !== 1) {
+    if (!process.env.MONGODB_URI) {
+      console.error('CRITICAL: MONGODB_URI is missing from environment variables');
+      return res.status(500).json({ 
+        error: 'Database configuration missing', 
+        details: 'MONGODB_URI is not defined in environment variables' 
+      });
+    }
+
     try {
       await mongoose.connect(process.env.MONGODB_URI, {
         serverSelectionTimeoutMS: 5000,
         bufferCommands: false,
       });
-      console.log('MongoDB late-connected');
+      console.log('MongoDB late-connected successfully');
     } catch (err) {
       console.error('DB connect failed in middleware:', err.message);
       // DON'T block health check
       if (req.url.includes('/health')) return next();
-      return res.status(500).json({ error: 'Database connection failed', details: err.message });
+      return res.status(500).json({ 
+        error: 'Database connection failed', 
+        details: err.message,
+        hint: 'Check if MONGODB_URI is correct and IP whitelist is set on MongoDB Atlas'
+      });
     }
   }
 
