@@ -78,7 +78,7 @@ app.use('/bookings', bookingRoutes);
 // Direct health/debug checks
 app.get('/health', (req, res) => res.json({ 
   status: 'ok', 
-  source: 'v-stay-api-v5',
+  source: 'v-stay-api-v6-FORCE-SYNC',
   db_state: mongoose.connection.readyState,
   uri_loaded: !!process.env.MONGODB_URI,
   uri_prefix: process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(0, 15) : 'none'

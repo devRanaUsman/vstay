@@ -1,6 +1,10 @@
 {
   "version": 2,
-  "cleanUrls": true,
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "server/**"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
