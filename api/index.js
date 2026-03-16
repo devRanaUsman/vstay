@@ -4,10 +4,10 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
-const authRoutes = require(path.resolve(__dirname, '../server/routes/auth'));
-const homeRoutes = require(path.resolve(__dirname, '../server/routes/homes'));
-const favoriteRoutes = require(path.resolve(__dirname, '../server/routes/favorites'));
-const bookingRoutes = require(path.resolve(__dirname, '../server/routes/bookings'));
+const authRoutes = require('../server/routes/auth');
+const homeRoutes = require('../server/routes/homes');
+const favoriteRoutes = require('../server/routes/favorites');
+const bookingRoutes = require('../server/routes/bookings');
 
 const app = express();
 
@@ -26,33 +26,38 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Routes (Handling both /api and direct hits)
-const apiRouter = express.Router();
-apiRouter.use('/auth', authRoutes);
-apiRouter.use('/homes', homeRoutes);
-apiRouter.use('/favorites', favoriteRoutes);
-// Health checks
-app.get('/api/health', (req, res) => res.json({ status: 'ok', source: 'v-stay-api-fixed' }));
-app.get('/health', (req, res) => res.json({ status: 'ok', source: 'v-stay-direct-fixed' }));
+// Path-stripping middleware (Crucial for Vercel)
+app.use((req, res, next) => {
+  if (req.url.startsWith('/api')) {
+    req.url = req.url.replace('/api', '');
+  }
+  next();
+});
 
-// Mount routes on /api prefix
-app.use('/api/auth', authRoutes);
-app.use('/api/homes', homeRoutes);
-app.use('/api/favorites', favoriteRoutes);
-app.use('/api/bookings', bookingRoutes);
-
-// Mount routes on root (for cases where Vercel strips /api)
+// Routes
 app.use('/auth', authRoutes);
 app.use('/homes', homeRoutes);
 app.use('/favorites', favoriteRoutes);
 app.use('/bookings', bookingRoutes);
+
+// Direct health/debug checks
+app.get('/health', (req, res) => res.json({ status: 'ok', source: 'v-stay-api-fixed-v3' }));
+app.get('/debug', (req, res) => {
+  res.json({
+    cwd: process.cwd(),
+    dirname: __dirname,
+    url: req.url,
+    files: require('fs').readdirSync(__dirname)
+  });
+});
 
 // 404 Handler
 app.use((req, res) => {
   res.status(404).json({ 
     error: 'API Route Not Found', 
     path: req.url,
-    method: req.method 
+    method: req.method,
+    full_url: req.originalUrl
   });
 });
 
