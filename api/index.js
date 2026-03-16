@@ -29,18 +29,27 @@ app.use(express.json());
 let isConnected = false;
 
 const connectDB = async () => {
-  if (isConnected) return;
-  if (!process.env.MONGODB_URI) {
-    console.error('MONGODB_URI is missing');
+  if (mongoose.connection.readyState === 1) {
+    console.log('MongoDB already connected');
     return;
   }
 
+  if (!process.env.MONGODB_URI) {
+    console.error('MONGODB_URI is missing from process.env');
+    throw new Error('MONGODB_URI environment variable is not defined');
+  }
+
+  // Debug log (Safe: only first few chars)
+  console.log('Attempting DB connection. URI starts with:', process.env.MONGODB_URI.substring(0, 15) + '...');
+
   try {
-    const db = await mongoose.connect(process.env.MONGODB_URI);
-    isConnected = db.connections[0].readyState === 1;
-    console.log('MongoDB connected');
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+      bufferCommands: false, // Disable buffering so it fails fast
+    });
+    console.log('MongoDB connection success');
   } catch (err) {
-    console.error('MongoDB connection error:', err);
+    console.error('MongoDB connection error details:', err.message);
     throw err;
   }
 };
@@ -69,8 +78,10 @@ app.use('/bookings', bookingRoutes);
 // Direct health/debug checks
 app.get('/health', (req, res) => res.json({ 
   status: 'ok', 
-  source: 'v-stay-api-v4',
-  db_state: mongoose.connection.readyState // 0: disconnected, 1: connected, 2: connecting, 3: disconnecting
+  source: 'v-stay-api-v5',
+  db_state: mongoose.connection.readyState,
+  uri_loaded: !!process.env.MONGODB_URI,
+  uri_prefix: process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(0, 15) : 'none'
 }));
 
 app.get('/debug', (req, res) => {
