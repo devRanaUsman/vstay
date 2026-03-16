@@ -94,7 +94,7 @@ export default function HomePage() {
                                     key={home._id}
                                     home={home}
                                     isSample={isSample}
-                                    isFavorited={favIds.includes(home._id)}
+                                    isFavorited={Array.isArray(favIds) && favIds.includes(home._id)}
                                     onFavToggle={fetchData}
                                 />
                             ))}
