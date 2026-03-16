@@ -30,21 +30,21 @@ app.use(async (req, res, next) => {
         bufferCommands: false,
       });
     } catch (err) {
-      if (req.path === '/health') return next();
+      if (req.path.includes('/health')) return next();
       return res.status(500).json({ error: 'Database connection failed', details: err.message });
     }
   }
   next();
 });
 
-// Mount routes directly at /api/* — no path stripping needed
+// Routes mounted at /api/* paths
 app.use('/api/auth', authRoutes);
 app.use('/api/homes', homeRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/bookings', bookingRoutes);
 
 // Health check
-app.get('/health', (req, res) => res.json({
+app.get('/api/health', (req, res) => res.json({
   status: 'ok',
   db_state: mongoose.connection.readyState,
   env: { uri: !!process.env.MONGODB_URI, jwt: !!process.env.JWT_SECRET }
