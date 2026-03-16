@@ -4,10 +4,10 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
-const authRoutes = require('../server/routes/auth');
-const homeRoutes = require('../server/routes/homes');
-const favoriteRoutes = require('../server/routes/favorites');
-const bookingRoutes = require('../server/routes/bookings');
+const authRoutes = require(path.resolve(__dirname, '../server/routes/auth'));
+const homeRoutes = require(path.resolve(__dirname, '../server/routes/homes'));
+const favoriteRoutes = require(path.resolve(__dirname, '../server/routes/favorites'));
+const bookingRoutes = require(path.resolve(__dirname, '../server/routes/bookings'));
 
 const app = express();
 
@@ -31,18 +31,21 @@ const apiRouter = express.Router();
 apiRouter.use('/auth', authRoutes);
 apiRouter.use('/homes', homeRoutes);
 apiRouter.use('/favorites', favoriteRoutes);
-apiRouter.use('/bookings', bookingRoutes);
-apiRouter.get('/health', (req, res) => res.json({ status: 'ok', source: 'v-stay-api' }));
+// Health checks
+app.get('/api/health', (req, res) => res.json({ status: 'ok', source: 'v-stay-api-fixed' }));
+app.get('/health', (req, res) => res.json({ status: 'ok', source: 'v-stay-direct-fixed' }));
 
-app.use('/api', apiRouter);
+// Mount routes on /api prefix
+app.use('/api/auth', authRoutes);
+app.use('/api/homes', homeRoutes);
+app.use('/api/favorites', favoriteRoutes);
+app.use('/api/bookings', bookingRoutes);
 
-// Fallback for direct function hits
+// Mount routes on root (for cases where Vercel strips /api)
 app.use('/auth', authRoutes);
 app.use('/homes', homeRoutes);
 app.use('/favorites', favoriteRoutes);
 app.use('/bookings', bookingRoutes);
-app.get('/health', (req, res) => res.json({ status: 'ok', source: 'v-stay-direct' }));
-app.get('/homes', (req, res) => res.json({ status: 'fallback-ok', message: 'If you see this, routing needs refinement but code is working' }));
 
 // 404 Handler
 app.use((req, res) => {
