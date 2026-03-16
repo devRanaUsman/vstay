@@ -7,16 +7,8 @@ const User = require('../models/User');
 
 const router = express.Router();
 
-// Multer config for image uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '..', 'uploads'));
-    },
-    filename: (req, file, cb) => {
-        const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname);
-        cb(null, uniqueName);
-    }
-});
+// ✅ FIX: Use memoryStorage instead of diskStorage (Vercel is serverless - no disk)
+const storage = multer.memoryStorage();
 
 const fileFilter = (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
@@ -83,6 +75,13 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
             return res.status(400).json({ message: 'Name, location, price, and description are required' });
         }
 
+        // ✅ FIX: Convert buffer to base64 data URL instead of saving to disk
+        let imageUrl = '';
+        if (req.file) {
+            const base64 = req.file.buffer.toString('base64');
+            imageUrl = `data:${req.file.mimetype};base64,${base64}`;
+        }
+
         const home = new Home({
             name,
             location,
@@ -90,7 +89,7 @@ router.post('/', auth, upload.single('image'), async (req, res) => {
             rating: parseFloat(rating) || 4.5,
             description,
             photo: photo || 'default',
-            imageUrl: req.file ? `/uploads/${req.file.filename}` : '',
+            imageUrl,
             hostId: req.userId
         });
 
@@ -123,8 +122,10 @@ router.put('/:id', auth, upload.single('image'), async (req, res) => {
         home.description = description || home.description;
         home.photo = photo || home.photo;
 
+        // ✅ FIX: Convert buffer to base64 data URL instead of saving to disk
         if (req.file) {
-            home.imageUrl = `/uploads/${req.file.filename}`;
+            const base64 = req.file.buffer.toString('base64');
+            home.imageUrl = `data:${req.file.mimetype};base64,${base64}`;
         }
 
         await home.save();

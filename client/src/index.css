@@ -1,3 +1,4 @@
+@import "tailwindcss";
 * { font-family: 'DM Sans', sans-serif; }
 .font-display { font-family: 'Playfair Display', serif; }
 .glass { background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); }
