@@ -48,6 +48,16 @@ app.use('/bookings', bookingRoutes);
 app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'V-Stay API' }));
 app.get('/health', (req, res) => res.json({ status: 'ok', message: 'V-Stay API' }));
 
+// 404 Handler for API
+app.use((req, res) => {
+  console.log(`404 at ${req.method} ${req.url}`);
+  res.status(404).json({ 
+    error: 'Not Found', 
+    message: `Route ${req.method} ${req.url} not found on this server`,
+    paths_tried: ['/api/auth', '/auth', etc]
+  });
+});
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {

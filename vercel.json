@@ -2,16 +2,16 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/api/(.*)",
+      "source": "/api/:path*",
       "destination": "/api/index.js"
     },
     {
-      "source": "/uploads/(.*)",
-      "destination": "/server/uploads/$1"
+      "source": "/uploads/:path*",
+      "destination": "/server/uploads/:path*"
     },
     {
-      "source": "/(.*)",
-      "destination": "/client/$1"
+      "source": "/((?!api|uploads).*)",
+      "destination": "/client/index.html"
     }
   ]
 }
