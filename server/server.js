@@ -49,12 +49,13 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'V-Stay A
 app.get('/health', (req, res) => res.json({ status: 'ok', message: 'V-Stay API' }));
 
 // 404 Handler for API
-app.use((req, res) => {
-  console.log(`404 at ${req.method} ${req.url}`);
+app.use('/api', (req, res) => {
+  console.log(`API 404 at ${req.method} ${req.url}`);
   res.status(404).json({ 
-    error: 'Not Found', 
-    message: `Route ${req.method} ${req.url} not found on this server`,
-    paths_tried: ['/api/auth', '/auth', etc]
+    error: 'API Route Not Found', 
+    path: req.url,
+    method: req.method,
+    fullUrl: req.originalUrl
   });
 });
 
