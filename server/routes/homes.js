@@ -36,7 +36,11 @@ router.get('/', async (req, res) => {
         res.json(homes);
     } catch (err) {
         console.error('Get homes error:', err);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ 
+            message: 'Server error', 
+            error: err.message,
+            stack: err.stack 
+        });
     }
 });
 

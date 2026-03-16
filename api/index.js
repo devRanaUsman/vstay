@@ -41,11 +41,17 @@ app.use('/favorites', favoriteRoutes);
 app.use('/bookings', bookingRoutes);
 
 // Direct health/debug checks
-app.get('/health', (req, res) => res.json({ status: 'ok', source: 'v-stay-api-fixed-v3' }));
+app.get('/health', (req, res) => res.json({ 
+  status: 'ok', 
+  source: 'v-stay-api-v4',
+  db_state: mongoose.connection.readyState // 0: disconnected, 1: connected, 2: connecting, 3: disconnecting
+}));
+
 app.get('/debug', (req, res) => {
   res.json({
     cwd: process.cwd(),
-    dirname: __dirname,
+    db_connected: mongoose.connection.readyState === 1,
+    env_loaded: !!process.env.MONGODB_URI,
     url: req.url,
     files: require('fs').readdirSync(__dirname)
   });
