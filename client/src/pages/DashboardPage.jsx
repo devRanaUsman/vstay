@@ -73,7 +73,7 @@ export default function DashboardPage() {
                     </button>
                 </div>
 
-                {homes.length === 0 ? (
+                {!Array.isArray(homes) || homes.length === 0 ? (
                     <div className="text-center py-20 bg-white rounded-2xl shadow-sm">
                         <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-purple-100 flex items-center justify-center">
                             <svg className="w-12 h-12 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

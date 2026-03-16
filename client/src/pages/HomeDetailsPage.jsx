@@ -18,11 +18,12 @@ export default function HomeDetailsPage() {
 
     const fetchHome = async () => {
         try {
-            const res = await api.getHome(id);
-            setHome(res.data);
+            if (res.data && typeof res.data === 'object' && !Array.isArray(res.data)) {
+                setHome(res.data);
+            }
             if (currentUser) {
                 const favRes = await api.getFavoriteIds();
-                setIsFav(favRes.data.includes(id));
+                setIsFav(Array.isArray(favRes.data) && favRes.data.includes(id));
             }
         } catch (err) {
             console.error(err);

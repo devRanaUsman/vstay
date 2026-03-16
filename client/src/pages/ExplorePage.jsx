@@ -29,8 +29,8 @@ export default function ExplorePage() {
 
     useEffect(() => { fetchData(); }, [currentUser]);
 
-    const displayHomes = homes.length > 0 ? homes : sampleHomes;
-    const isSample = homes.length === 0;
+    const displayHomes = Array.isArray(homes) && homes.length > 0 ? homes : sampleHomes;
+    const isSample = !Array.isArray(homes) || homes.length === 0;
 
     return (
         <div className="fade-in py-8">
@@ -79,7 +79,7 @@ export default function ExplorePage() {
                                 key={home._id}
                                 home={home}
                                 isSample={isSample}
-                                isFavorited={favIds.includes(home._id)}
+                                isFavorited={Array.isArray(favIds) && favIds.includes(home._id)}
                                 onFavToggle={fetchData}
                             />
                         ))}

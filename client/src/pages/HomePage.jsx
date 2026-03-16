@@ -29,8 +29,8 @@ export default function HomePage() {
 
     useEffect(() => { fetchData(); }, [currentUser]);
 
-    const displayHomes = homes.length > 0 ? homes.slice(0, 6) : sampleHomes;
-    const isSample = homes.length === 0;
+    const displayHomes = Array.isArray(homes) && homes.length > 0 ? homes.slice(0, 6) : sampleHomes;
+    const isSample = !Array.isArray(homes) || homes.length === 0;
 
     return (
         <div className="slide-up">
