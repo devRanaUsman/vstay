@@ -54,7 +54,7 @@ app.use('/bookings', bookingRoutes);
 // Health check with detailed error reporting
 app.get('/health', (req, res) => res.json({ 
   status: 'ok', 
-  source: 'v-stay-api-v14-PRODUCTION-READY',
+  source: 'v-stay-api-v15-GOLDEN-SYNC',
   db_state: mongoose.connection.readyState,
   env_check: {
     uri: !!process.env.MONGODB_URI,
