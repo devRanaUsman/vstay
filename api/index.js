@@ -18,7 +18,6 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// DB connection middleware
 app.use(async (req, res, next) => {
   if (mongoose.connection.readyState !== 1) {
     if (!process.env.MONGODB_URI) {
@@ -30,34 +29,27 @@ app.use(async (req, res, next) => {
         bufferCommands: false,
       });
     } catch (err) {
-      if (req.path.includes('/health')) return next();
       return res.status(500).json({ error: 'Database connection failed', details: err.message });
     }
   }
   next();
 });
 
-// Routes mounted at /api/* paths
 app.use('/api/auth', authRoutes);
 app.use('/api/homes', homeRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/bookings', bookingRoutes);
 
-// Health check
 app.get('/api/health', (req, res) => res.json({
   status: 'ok',
-  db_state: mongoose.connection.readyState,
-  env: { uri: !!process.env.MONGODB_URI, jwt: !!process.env.JWT_SECRET }
+  db_state: mongoose.connection.readyState
 }));
 
-// 404 fallback
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found', path: req.url });
 });
 
-// Error handler
 app.use((err, req, res, next) => {
-  console.error(err);
   res.status(500).json({ error: 'Server error', message: err.message });
 });
 
