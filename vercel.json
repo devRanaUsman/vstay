@@ -7,28 +7,25 @@
       "config": { "distDir": "dist" }
     },
     {
-      "src": "server/server.js",
+      "src": "api/index.js",
       "use": "@vercel/node",
       "config": {
         "includeFiles": ["server/routes/**", "server/models/**", "server/middleware/**", "server/uploads/**"]
       }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "server/server.js"
+      "source": "/api/(.*)",
+      "destination": "/api/index.js"
     },
     {
-      "src": "/uploads/(.*)",
-      "dest": "server/uploads/$1"
+      "source": "/uploads/(.*)",
+      "destination": "server/uploads/$1"
     },
     {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "client/index.html"
+      "source": "/(.*)",
+      "destination": "/client/$1"
     }
   ]
 }

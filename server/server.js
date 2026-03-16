@@ -11,10 +11,15 @@ const bookingRoutes = require('./routes/bookings');
 
 const app = express();
 
-// Request logging middleware
+// Improved Request logging middleware
 app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl || req.url}`);
   next();
+});
+
+// Root API check
+app.get('/api', (req, res) => {
+  res.json({ message: 'V-Stay API Root' });
 });
 
 // Middleware (Relaxed for debugging deployment issues)
