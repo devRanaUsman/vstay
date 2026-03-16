@@ -55,9 +55,16 @@ app.use((req, res) => {
 
 // MongoDB Connection
 if (process.env.MONGODB_URI) {
+  console.log('Connecting to MongoDB...');
   mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB error:', err));
+    .catch(err => console.error('MongoDB connection error:', err));
 }
+
+// Error handling for startup crashes
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({ error: 'Internal Server Error', details: err.message });
+});
 
 module.exports = app;
