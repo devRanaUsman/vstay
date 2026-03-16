@@ -1,19 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "client/package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
-    },
-    {
-      "src": "api/index.js",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": ["server/routes/**", "server/models/**", "server/middleware/**", "server/uploads/**"]
-      }
-    }
-  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -21,7 +7,7 @@
     },
     {
       "source": "/uploads/(.*)",
-      "destination": "server/uploads/$1"
+      "destination": "/server/uploads/$1"
     },
     {
       "source": "/(.*)",

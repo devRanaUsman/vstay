@@ -38,16 +38,15 @@ app.use('/api/homes', homeRoutes);
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/bookings', bookingRoutes);
 
-// Fallback routes for Vercel (in case /api prefix is stripped)
+// Flexible routes (without /api prefix) for Vercel rewrites
 app.use('/auth', authRoutes);
 app.use('/homes', homeRoutes);
 app.use('/favorites', favoriteRoutes);
 app.use('/bookings', bookingRoutes);
 
 // Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'V-Stay API is running' });
-});
+app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'V-Stay API' }));
+app.get('/health', (req, res) => res.json({ status: 'ok', message: 'V-Stay API' }));
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
