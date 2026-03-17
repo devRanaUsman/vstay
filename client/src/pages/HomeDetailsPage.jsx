@@ -18,6 +18,7 @@ export default function HomeDetailsPage() {
 
     const fetchHome = async () => {
         try {
+            const res = await api.getHome(id);
             if (res.data && typeof res.data === 'object' && !Array.isArray(res.data)) {
                 setHome(res.data);
             }
